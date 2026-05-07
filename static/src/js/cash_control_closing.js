@@ -68,7 +68,21 @@ patch(ClosePosPopup.prototype, {
         if (!this.props.default_cash_details) {
             return 0;
         }
-        return this.getDifference(this.props.default_cash_details.id);
+        // Verificar si getDifference existe y puede ser llamado
+        if (typeof this.getDifference === 'function') {
+            try {
+                return this.getDifference(this.props.default_cash_details.id);
+            } catch (e) {
+                console.warn('Error in getDifference:', e);
+                return 0;
+            }
+        }
+        // Fallback: calcular diferencia manualmente
+        const details = this.props.default_cash_details;
+        if (details && details.counted !== undefined) {
+            return (details.counted || 0) - (details.expected || 0);
+        }
+        return 0;
     },
 
     async confirm() {
