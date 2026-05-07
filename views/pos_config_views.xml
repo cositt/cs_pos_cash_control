@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cs_pos_cash_control_pos_config_view_form" model="ir.ui.view">
+        <field name="name">cs.pos.cash.control.pos.config.form</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='other_devices']" position="before">
+                <setting
+                    id="cs_fixed_cash_control_setting"
+                    string="Control de fondo fijo"
+                    help="Controla el fondo fijo de apertura y la retirada sugerida en el cierre para este Punto de Venta.">
+                    <field name="cs_fixed_cash_control_enabled" readonly="has_active_session"/>
+                    <div class="content-group mt16" invisible="not cs_fixed_cash_control_enabled">
+                        <div class="row">
+                            <div class="col-lg-5 o_light_label">
+                                <label for="cs_fixed_cash_amount" string="Fondo fijo de caja"/>
+                            </div>
+                            <div class="col-lg-7">
+                                <field
+                                    name="cs_fixed_cash_amount"
+                                    widget="monetary"
+                                    options="{'currency_field': 'currency_id'}"
+                                    readonly="has_active_session"/>
+                            </div>
+                        </div>
+                    </div>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="cs_pos_cash_control.ClosePosPopup"
+       t-inherit="point_of_sale.ClosePosPopup"
+       t-inherit-mode="extension">
+
+        <xpath expr="//div[hasclass('payment-methods-overview')]" position="after">
+            <div t-if="csCashControlEnabled" class="cs-cash-control-close mb-3">
+                <div class="cs-cash-control-title">Control de caja</div>
+                <div class="cs-cash-control-grid">
+                    <div>Fondo fijo configurado</div>
+                    <div t-esc="env.utils.formatCurrency(csCashControl.fixed_cash_amount)"/>
+                    <div>Fondo apertura</div>
+                    <div t-esc="env.utils.formatCurrency(csCashControl.opening_cash)"/>
+                    <div>Ventas efectivo</div>
+                    <div t-esc="env.utils.formatCurrency(csCashControl.cash_sales)"/>
+                    <div>Entradas efectivo</div>
+                    <div t-esc="env.utils.formatCurrency(csCashControl.cash_in_total)"/>
+                    <div>Salidas efectivo</div>
+                    <div t-esc="env.utils.formatCurrency(csCashControl.cash_out_total)"/>
+                    <div class="fw-semibold">Efectivo esperado</div>
+                    <div class="fw-semibold" t-esc="env.utils.formatCurrency(csCashControl.expected_cash)"/>
+                    <div class="fw-semibold">Retirada sugerida</div>
+                    <div class="fw-semibold" t-esc="env.utils.formatCurrency(csCashControl.suggested_withdrawal)"/>
+                    <div>Proximo fondo de caja</div>
+                    <div t-esc="env.utils.formatCurrency(csCashControl.next_cash_float)"/>
+                </div>
+
+                <div class="cs-cash-control-moves mt-3">
+                    <t t-if="csCashControlInputs.length">
+                        <div class="cs-cash-control-subtitle">Entradas registradas</div>
+                        <div t-foreach="csCashControlInputs" t-as="move" t-key="move.id" class="cs-cash-control-move">
+                            <span t-esc="move.name"/>
+                            <span t-esc="env.utils.formatCurrency(move.amount)"/>
+                            <small class="text-muted" t-if="move.cashier_name" t-esc="move.cashier_name"/>
+                            <small class="text-muted" t-if="move.date" t-esc="move.date"/>
+                        </div>
+                    </t>
+
+                    <div class="cs-cash-control-subtitle mt-2">Salidas registradas</div>
+                    <div t-if="!csCashControlOutputs.length" class="text-muted">Sin salidas registradas.</div>
+                    <div t-foreach="csCashControlOutputs" t-as="move" t-key="move.id" class="cs-cash-control-move">
+                        <span t-esc="move.name"/>
+                        <span t-esc="env.utils.formatCurrency(move.amount)"/>
+                        <small class="text-muted" t-if="move.cashier_name" t-esc="move.cashier_name"/>
+                        <small class="text-muted" t-if="move.date" t-esc="move.date"/>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//button[@t-on-click='() => this.cashMove()']" position="before">
+            <button t-if="csCashControlEnabled"
+                class="button btn btn-secondary"
+                t-att-disabled="!csHasSuggestedWithdrawal"
+                t-att-class="this.ui.isSmall ? 'w-100' : 'btn-lg'"
+                t-on-click="csRegisterSuggestedWithdrawal">
+                Registrar retirada sugerida
+            </button>
+        </xpath>
+    </t>
+</templates>

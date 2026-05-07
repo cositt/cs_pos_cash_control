@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="cs_pos_cash_control.PosCashClosingReport">
+        <t t-set="d" t-value="cs_pos_cash_closing"/>
+        <div class="pos-receipt cs-pos-cash-closing-receipt">
+            <div class="cs-receipt-center cs-receipt-title">
+                <t t-esc="d.config_name"/>
+                <span> (ID: </span><t t-esc="d.session_id"/><span>)</span>
+            </div>
+            <div class="cs-receipt-center"><t t-esc="d.session_name"/></div>
+            <div class="cs-receipt-center cs-receipt-company"><t t-esc="d.company.name"/></div>
+            <div t-if="d.company.street" class="cs-receipt-center"><t t-esc="d.company.street"/></div>
+            <div t-if="d.company.street2" class="cs-receipt-center"><t t-esc="d.company.street2"/></div>
+            <div t-if="d.company.city_zip" class="cs-receipt-center"><t t-esc="d.company.city_zip"/></div>
+            <div t-if="d.company.vat" class="cs-receipt-center"><t t-esc="d.company.vat"/></div>
+
+            <div class="cs-receipt-separator"/>
+
+            <div class="cs-section-title">ABRIR</div>
+            <div class="cs-line">
+                <span><t t-esc="d.opening.date"/></span>
+                <span><t t-esc="d.opening.user"/></span>
+            </div>
+            <div class="cs-section-title cs-section-spaced">CERRAR</div>
+            <div class="cs-line">
+                <span><t t-esc="d.closing.date"/></span>
+                <span><t t-esc="d.closing.user"/></span>
+            </div>
+
+            <div class="cs-receipt-separator"/>
+
+            <div class="cs-section-title">COBROS TOTALES</div>
+            <t t-foreach="d.payments.lines" t-as="payment" t-key="payment.id">
+                <div class="cs-line">
+                    <span><t t-esc="payment.name"/></span>
+                    <span><t t-esc="formatCurrency(payment.amount, false)"/></span>
+                </div>
+            </t>
+            <div class="cs-line cs-total-line">
+                <span>TOTAL</span>
+                <span><t t-esc="formatCurrency(d.payments.total, false)"/></span>
+            </div>
+
+            <div class="cs-receipt-separator"/>
+
+            <div class="cs-section-title">VENTAS</div>
+            <div class="cs-tax-grid cs-tax-header">
+                <span>Nombre</span>
+                <span>Base</span>
+                <span>Imp.</span>
+                <span>Total</span>
+            </div>
+            <t t-foreach="d.taxes.lines" t-as="tax" t-key="tax_index">
+                <div class="cs-tax-grid">
+                    <span><t t-esc="tax.name"/></span>
+                    <span><t t-esc="formatCurrency(tax.base, false)"/></span>
+                    <span><t t-esc="formatCurrency(tax.tax, false)"/></span>
+                    <span><t t-esc="formatCurrency(tax.total, false)"/></span>
+                </div>
+            </t>
+            <div class="cs-tax-grid cs-total-line">
+                <span>TOTAL</span>
+                <span><t t-esc="formatCurrency(d.taxes.total_base, false)"/></span>
+                <span><t t-esc="formatCurrency(d.taxes.total_tax, false)"/></span>
+                <span><t t-esc="formatCurrency(d.taxes.total, false)"/></span>
+            </div>
+
+            <div class="cs-receipt-separator"/>
+
+            <div class="cs-section-title">INFORMACION ADICIONAL</div>
+            <div t-if="d.additional.guest_count" class="cs-line">
+                <span>Comensales</span>
+                <span><t t-esc="d.additional.guest_count"/></span>
+            </div>
+            <div class="cs-line">
+                <span>Numero de tickets</span>
+                <span><t t-esc="d.additional.order_count"/></span>
+            </div>
+            <div class="cs-line">
+                <span>Numero de facturas</span>
+                <span><t t-esc="d.additional.invoice_count"/></span>
+            </div>
+            <div class="cs-line">
+                <span>Media ventas por ticket</span>
+                <span><t t-esc="formatCurrency(d.additional.average_ticket, false)"/></span>
+            </div>
+            <div t-if="d.additional.guest_count" class="cs-line">
+                <span>Media ventas por comensal</span>
+                <span><t t-esc="formatCurrency(d.additional.average_guest, false)"/></span>
+            </div>
+            <div t-if="d.additional.tip_amount" class="cs-line">
+                <span>Propina</span>
+                <span><t t-esc="formatCurrency(d.additional.tip_amount, false)"/></span>
+            </div>
+            <div t-if="d.additional.discount_amount" class="cs-line">
+                <span>Descuentos</span>
+                <span><t t-esc="formatCurrency(d.additional.discount_amount, false)"/></span>
+            </div>
+
+            <div class="cs-receipt-separator"/>
+
+            <div class="cs-section-title">EFECTIVO <t t-esc="d.cash.currency_name"/></div>
+            <div class="cs-line">
+                <span>Numero de transacciones</span>
+                <span><t t-esc="d.cash.transaction_count"/></span>
+            </div>
+            <div class="cs-line"><span>Fondo de caja</span><span><t t-esc="formatCurrency(d.cash.opening_cash, false)"/></span></div>
+            <div class="cs-line"><span>Ventas</span><span><t t-esc="formatCurrency(d.cash.cash_sales, false)"/></span></div>
+            <div class="cs-line"><span>Entradas</span><span><t t-esc="formatCurrency(d.cash.cash_in, false)"/></span></div>
+            <div class="cs-line"><span>Salidas extraordinarias</span><span><t t-esc="formatCurrency(d.cash.cash_out_extraordinary, false)"/></span></div>
+            <div class="cs-line cs-total-line"><span>TOTAL EFECTIVO ESPERADO</span><span><t t-esc="formatCurrency(d.cash.expected_before_withdrawal, false)"/></span></div>
+            <div class="cs-line"><span>TOTAL CONTADO</span><span><t t-esc="formatCurrency(d.cash.counted, false)"/></span></div>
+            <div class="cs-line"><span>Descuadre</span><span><t t-esc="formatCurrency(d.cash.difference, false)"/></span></div>
+            <div class="cs-line"><span>Retirado</span><span><t t-esc="formatCurrency(d.cash.withdrawn, false)"/></span></div>
+            <div class="cs-line"><span>Proximo fondo de caja</span><span><t t-esc="formatCurrency(d.cash.next_cash_float, false)"/></span></div>
+
+            <t t-if="d.cash.outputs.length || d.cash.closing_withdrawals.length">
+                <div class="cs-receipt-separator"/>
+                <div class="cs-section-title">SALIDAS EXTRAORDINARIAS</div>
+                <t t-foreach="d.cash.outputs" t-as="move" t-key="move_index">
+                    <div class="cs-line">
+                        <span><t t-esc="move.name"/></span>
+                        <span><t t-esc="formatCurrency(move.amount, false)"/></span>
+                    </div>
+                </t>
+                <t t-foreach="d.cash.closing_withdrawals" t-as="move" t-key="move_index">
+                    <div class="cs-line">
+                        <span><t t-esc="move.name"/></span>
+                        <span><t t-esc="formatCurrency(move.amount, false)"/></span>
+                    </div>
+                </t>
+                <div class="cs-line cs-total-line">
+                    <span>SUBTOTAL</span>
+                    <span><t t-esc="formatCurrency(d.cash.outputs_subtotal, false)"/></span>
+                </div>
+            </t>
+
+            <t t-if="d.cash.inputs.length">
+                <div class="cs-receipt-separator"/>
+                <div class="cs-section-title">ENTRADAS EXTRAORDINARIAS</div>
+                <t t-foreach="d.cash.inputs" t-as="move" t-key="move_index">
+                    <div class="cs-line">
+                        <span><t t-esc="move.name"/></span>
+                        <span><t t-esc="formatCurrency(move.amount, false)"/></span>
+                    </div>
+                </t>
+            </t>
+
+            <div class="cs-receipt-separator"/>
+
+            <div class="cs-section-title">TARJETA <t t-esc="d.card.currency_name"/></div>
+            <div class="cs-line">
+                <span>Numero de transacciones</span>
+                <span><t t-esc="d.card.transaction_count"/></span>
+            </div>
+            <div class="cs-line"><span>Ventas</span><span><t t-esc="formatCurrency(d.card.sales, false)"/></span></div>
+            <div t-if="d.card.tip" class="cs-line"><span>Propina</span><span><t t-esc="formatCurrency(d.card.tip, false)"/></span></div>
+            <div class="cs-line cs-total-line"><span>TOTAL</span><span><t t-esc="formatCurrency(d.card.total, false)"/></span></div>
+
+            <div class="cs-receipt-separator"/>
+            <div class="cs-receipt-center">CIERRE DE CAJA</div>
+        </div>
+    </t>
+
+</templates>
