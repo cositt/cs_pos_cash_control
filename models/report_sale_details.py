@@ -82,6 +82,38 @@ class ReportSaleDetails(models.AbstractModel):
             'total': total_base + total_tax,
         }
 
+    def _cs_get_cash_move_concept(self, move, session):
+        """Concepto del movimiento (motivo Cash In/Out), como en el TPV."""
+        ref = (move.payment_ref or '').strip()
+        if ref:
+            session_name = session.name
+            for move_type in ('in', 'out'):
+                marker = f'{session_name}-{move_type}-'
+                if ref.startswith(marker):
+                    concept = ref[len(marker):].strip()
+                    if concept:
+                        return concept
+            prefix = f'{session_name}-'
+            if ref.startswith(prefix):
+                rest = ref[len(prefix):].lstrip()
+                if rest.startswith(('in-', 'out-')):
+                    return rest[3:].strip() or ref
+                return rest or ref
+            return ref
+        return (move.name or '').strip()
+
+    def _cs_format_cash_move_line(self, move, session):
+        concept = self._cs_get_cash_move_concept(move, session)
+        cashier_name = move.partner_id.name or ''
+        if not concept and cashier_name:
+            concept = cashier_name
+        return {
+            'concept': concept,
+            'cashier_name': cashier_name,
+            'name': concept or move.payment_ref or move.name or '',
+            'amount': move.amount,
+        }
+
     def _cs_get_cash_move_summary(self, session):
         moves = self.env['account.bank.statement.line'].search([
             ('pos_session_id', '=', session.id),
@@ -91,13 +123,11 @@ class ReportSaleDetails(models.AbstractModel):
         outputs = []
         closing_withdrawals = []
         for move in moves:
-            line = {
-                'name': move.payment_ref or move.name or '',
-                'amount': move.amount,
-            }
+            line = self._cs_format_cash_move_line(move, session)
+            payment_ref = move.payment_ref or ''
             if move.amount > 0:
                 inputs.append(line)
-            elif reason and reason.lower() in (line['name'] or '').lower():
+            elif reason and reason.lower() in payment_ref.lower():
                 closing_withdrawals.append(line)
             elif move.amount < 0:
                 outputs.append(line)

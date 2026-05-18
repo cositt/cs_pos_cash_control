@@ -107,45 +107,32 @@
             </div>
             <div class="cs-line"><span>Fondo de caja</span><span><t t-esc="formatCurrency(d.cash.opening_cash, false)"/></span></div>
             <div class="cs-line"><span>Ventas</span><span><t t-esc="formatCurrency(d.cash.cash_sales, false)"/></span></div>
-            <div class="cs-line"><span>Entradas</span><span><t t-esc="formatCurrency(d.cash.cash_in, false)"/></span></div>
+            <t t-foreach="d.cash.inputs" t-as="move" t-key="move_index">
+                <div class="cs-line cs-cash-move-line">
+                    <span><t t-esc="move.concept"/></span>
+                    <span><t t-esc="formatCurrency(move.amount, false)"/></span>
+                </div>
+            </t>
+            <div t-if="d.cash.inputs.length" class="cs-line">
+                <span>Entradas</span>
+                <span><t t-esc="formatCurrency(d.cash.cash_in, false)"/></span>
+            </div>
+            <t t-foreach="d.cash.outputs" t-as="move" t-key="move_index">
+                <div class="cs-line cs-cash-move-line">
+                    <span><t t-esc="move.concept"/></span>
+                    <span><t t-esc="formatCurrency(move.amount, false)"/></span>
+                </div>
+            </t>
+            <div t-if="d.cash.outputs.length" class="cs-line cs-total-line">
+                <span>SUBTOTAL</span>
+                <span><t t-esc="formatCurrency(d.cash.outputs_subtotal, false)"/></span>
+            </div>
             <div class="cs-line"><span>Salidas extraordinarias</span><span><t t-esc="formatCurrency(d.cash.cash_out_extraordinary, false)"/></span></div>
             <div class="cs-line cs-total-line"><span>TOTAL EFECTIVO ESPERADO</span><span><t t-esc="formatCurrency(d.cash.expected_before_withdrawal, false)"/></span></div>
             <div class="cs-line"><span>TOTAL CONTADO</span><span><t t-esc="formatCurrency(d.cash.counted, false)"/></span></div>
             <div class="cs-line"><span>Descuadre</span><span><t t-esc="formatCurrency(d.cash.difference, false)"/></span></div>
             <div class="cs-line"><span>Retirado</span><span><t t-esc="formatCurrency(d.cash.withdrawn, false)"/></span></div>
             <div class="cs-line"><span>Proximo fondo de caja</span><span><t t-esc="formatCurrency(d.cash.next_cash_float, false)"/></span></div>
-
-            <t t-if="d.cash.outputs.length || d.cash.closing_withdrawals.length">
-                <div class="cs-receipt-separator"/>
-                <div class="cs-section-title">SALIDAS EXTRAORDINARIAS</div>
-                <t t-foreach="d.cash.outputs" t-as="move" t-key="move_index">
-                    <div class="cs-line">
-                        <span><t t-esc="move.name"/></span>
-                        <span><t t-esc="formatCurrency(move.amount, false)"/></span>
-                    </div>
-                </t>
-                <t t-foreach="d.cash.closing_withdrawals" t-as="move" t-key="move_index">
-                    <div class="cs-line">
-                        <span><t t-esc="move.name"/></span>
-                        <span><t t-esc="formatCurrency(move.amount, false)"/></span>
-                    </div>
-                </t>
-                <div class="cs-line cs-total-line">
-                    <span>SUBTOTAL</span>
-                    <span><t t-esc="formatCurrency(d.cash.outputs_subtotal, false)"/></span>
-                </div>
-            </t>
-
-            <t t-if="d.cash.inputs.length">
-                <div class="cs-receipt-separator"/>
-                <div class="cs-section-title">ENTRADAS EXTRAORDINARIAS</div>
-                <t t-foreach="d.cash.inputs" t-as="move" t-key="move_index">
-                    <div class="cs-line">
-                        <span><t t-esc="move.name"/></span>
-                        <span><t t-esc="formatCurrency(move.amount, false)"/></span>
-                    </div>
-                </t>
-            </t>
 
             <div class="cs-receipt-separator"/>
 

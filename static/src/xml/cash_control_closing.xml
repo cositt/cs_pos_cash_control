@@ -49,6 +49,19 @@
             </div>
         </xpath>
 
+        <!-- Vista previa HTML (QA sin impresora): descomentar xpath + JS en cash_control_closing.js
+        <xpath expr="//button[@t-on-click='downloadSalesReport']" position="after">
+            <button t-if="csShowHtmlClosingReceiptPreview"
+                type="button"
+                class="button btn btn-secondary"
+                t-att-class="this.ui.isSmall ? 'w-100' : 'btn-lg'"
+                t-on-click="downloadClosingReceiptHtmlPreview"
+                title="Descarga HTML: mismo contenido y maqueta que el ticket térmico de cierre (sin impresora)">
+                Vista previa ticket (HTML)
+            </button>
+        </xpath>
+        -->
+
         <xpath expr="//button[@t-on-click='() => this.cashMove()']" position="before">
             <button t-if="csCashControlEnabled"
                 class="button btn btn-secondary"

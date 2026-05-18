@@ -83,6 +83,15 @@
     white-space: nowrap;
 }
 
+.cs-pos-cash-closing-receipt .cs-cash-move-line {
+    padding-left: 0.35rem;
+    font-size: 0.95em;
+}
+
+.cs-pos-cash-closing-receipt .cs-cash-move-line span:first-child {
+    font-style: italic;
+}
+
 .cs-pos-cash-closing-receipt .cs-total-line {
     font-weight: 700;
     border-top: 1px solid #000;

@@ -5,6 +5,13 @@ import { ClosePosPopup } from "@point_of_sale/app/components/popups/closing_popu
 import { AlertDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { _t } from "@web/core/l10n/translation";
 import { patch } from "@web/core/utils/patch";
+// Vista previa HTML (QA): descomentar imports + bloque CS_HTML_* + downloadClosingReceiptHtmlPreview
+// import {
+//     downloadClosingReceiptAsHtml,
+//     fetchSessionSaleDetails,
+//     renderClosingReceiptElement,
+// } from "./closing_receipt_html_preview";
+// const CS_HTML_CLOSING_RECEIPT_PREVIEW = true;
 
 ClosePosPopup.props = [...ClosePosPopup.props, "cs_cash_control?"];
 
@@ -40,6 +47,10 @@ patch(CashMovePopup.prototype, {
 });
 
 patch(ClosePosPopup.prototype, {
+    // get csShowHtmlClosingReceiptPreview() {
+    //     return CS_HTML_CLOSING_RECEIPT_PREVIEW;
+    // },
+
     get csCashControlEnabled() {
         return Boolean(this.props.cs_cash_control?.enabled);
     },
@@ -115,6 +126,20 @@ patch(ClosePosPopup.prototype, {
         }
         return super.cashMove();
     },
+
+    // async downloadClosingReceiptHtmlPreview() {
+    //     const saleDetails = await fetchSessionSaleDetails(this.pos);
+    //     const report = renderClosingReceiptElement(saleDetails, this.pos);
+    //     downloadClosingReceiptAsHtml(report, this.pos.session.id, {
+    //         isCustomClosing: Boolean(saleDetails.cs_pos_cash_closing),
+    //     });
+    //     this.dialog.add(AlertDialog, {
+    //         title: _t("Vista previa"),
+    //         body: _t(
+    //             "Se ha descargado un archivo HTML. Ábrelo en el navegador para ver el ticket tal como lo maquetaría el TPV (ancho ~80 mm)."
+    //         ),
+    //     });
+    // },
 
     async csRegisterSuggestedWithdrawal() {
         if (!this.csCashControlEnabled || !this.csHasSuggestedWithdrawal) {

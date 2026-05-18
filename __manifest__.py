@@ -21,6 +21,7 @@ retirada sugerida y personalizar el ticket impreso de cierre de caja.
     ],
     'assets': {
         'point_of_sale._assets_pos': [
+            'cs_pos_cash_control/static/src/js/closing_receipt_html_preview.js',
             'cs_pos_cash_control/static/src/js/opening_control_popup.js',
             'cs_pos_cash_control/static/src/js/cash_control_closing.js',
             'cs_pos_cash_control/static/src/js/pos_cash_closing_report.js',
